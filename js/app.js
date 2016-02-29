@@ -10,47 +10,39 @@
 var counter = 0;
 
 $(document).ready(function(){
-
-  $('.employee-removal').on('click', function(){
-    $(this).parent().remove();
-  });
-
   $('#employeeInformation').on("submit", function(event){
     // Prevents default behavior of the browser
     event.preventDefault();
-
     var employees = {};
-
-
-      //Do Nothing
-
       $.each($('#employeeInformation').serializeArray(), function(i, field){
         employees[field.name] = field.value;
       });
 
+      employees.currentSalary = removeNonNumeric(employees.currentSalary);
       // Not sure if it should be double or single qoutes
       $('#employeeInformation').find('input[type=text]').val('');
 
+      //Checks to see if fields are empty
       if(employees.firstName == "" || employees.lastName == "" || employees.employeeID == "" || employees.jobTitle == "" || employees.currentSalary == 0){
         alert("Please Enter Applicable Values");
       } else {
         employeeArray.push(employees);
-        console.log(employeeArray);
 
         totalSalaryCalculation(employeeArray[counter].currentSalary);
         appendDOM(employeeArray[counter]);
       }
   });
 
+  // Removes employee node and information
+  $('.employee-nodes').on('click', '.employee-removal', removify);
 
 });
 
 var employeeArray =[];
 
-//Writing to the DOM
+//Input: Takes in object created by user
+//Output: Writes items to the DOM
 function appendDOM(object){
-
-  console.log(object);
 
     $('.employee-nodes').append('<div class="employee-info"></div>');
     var $el = $('.employee-nodes').children().last();
@@ -59,40 +51,57 @@ function appendDOM(object){
       $el.append('<p>Employee ID: ' + object.employeeID + '</p>');
       $el.append('<p>Position: ' + object.jobTitle + '</p>');
       $el.append('<p>Current Salary: $' + object.currentSalary + '</p>');
-      $el.append('<button class="employee-removal">Removify</button>');
-
+      $el.append('<button class="employee-removal" data-empID="' + object.employeeID + '">Removify</button>');
       counter++;
 
+}
 
+//Removes clicked item and parent from DOM
+//Recalculates combined employee total costs
+function removify(){
+
+  //console.log(employeeArray);
+
+  for(var j = 0; j < employeeArray.length; j++){
+    if(employeeArray[j].employeeID == $(this).data('empid')){
+        employeeArray.splice(j, 1);
+        //console.log(employeeArray[j].employeeID);
+    }
+    //console.log(employeeArray);
+    //console.log($(this).data('data'));
+    totalSalaryCalculation();
+  }
+  $(this).parent().remove();
+  counter--;
 }
 
 //Input: Takes in employees' salary information
 //Output: Returns monthly cost of salaries
 function totalSalaryCalculation(number){
-  console.log("Test: " + number);
   if(number == 0 || number == "" || number === undefined || number == NaN){
     // Do nothing
   } else {
-    console.log("Success");
     var allEmployeeSalaries = 0;
     for(var i = 0; i < employeeArray.length; i++){
       var employee = employeeArray[i];
-
-      //Need to check for non-numerical characters
-      //What happens if you get a negative number?
       allEmployeeSalaries += parseInt(number);
     }
-    allEmployeeSalaries = convertToMonthly(allEmployeeSalaries);
+    allEmployeeSalaries = Math.round(convertToMonthly(allEmployeeSalaries));
     $('.totalSalaryCost').text('Total Salary Cost Per Month: $' + allEmployeeSalaries);
     return allEmployeeSalaries;
   }
-
 }
 
 //Input: Takes in salary of employees
 //Output: Returns the monthly cost to pay employees
 function convertToMonthly(value){
   Math.round(value /= 12);
-  console.log(value);
   return value;
+}
+
+//Input: Takes in user entered salary
+//Ouput: Removes non numerical characters and returns a string of numbers
+function removeNonNumeric(str){
+	var numericString = str.replace(/[^0-9]/g, '');
+	return numericString;
 }
