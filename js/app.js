@@ -2,37 +2,35 @@
 //Solution: Create an application that recordes employees along with their salary
 
 var counter = 0;
+var employeeArray =[];
 
+//Executables
 $(document).ready(function(){
-  $('#employeeInformation').on("submit", function(event){
-    // Prevents default behavior of the browser
-    event.preventDefault();
-    var employees = {};
-      $.each($('#employeeInformation').serializeArray(), function(i, field){
-        employees[field.name] = field.value;
-      });
-
-      $('#employeeInformation').find('input[type=text]').val('');
-
-      //Checks to see if fields are empty
-      //If not, run core script
-      if(employees.firstName == "" || employees.lastName == "" || employees.employeeID == "" || employees.jobTitle == "" || employees.currentSalary == 0){
-        alert("Please Enter Applicable Values");
-      } else {
-        employeeArray.push(employees);
-        totalSalaryCalculation();
-        appendDOM(employeeArray[counter]);
-      }
-  });
-
-  // Removes employee node and information
+  $('#employeeInformation').on("submit", handleSubmit);
   $('.employee-nodes').on('click', '.employee-removal', removify);
-
-  console.log("BREAK!");
-
 });
 
-var employeeArray =[];
+//Input: Takes in user entered data
+//Output: Calculates employee information, returns monthly costs, and appends useful information to the DOM
+function handleSubmit(event){
+  event.preventDefault();
+  var employees = {};
+    $.each($('#employeeInformation').serializeArray(), function(i, field){
+      employees[field.name] = field.value;
+    });
+
+    $('#employeeInformation').find('input[type=text]').val('');
+
+    //Checks to see if fields are empty
+    //If not, run core script
+    if(employees.firstName == "" || employees.lastName == "" || employees.employeeID == "" || employees.jobTitle == "" || employees.currentSalary == 0){
+      alert("Please Enter Applicable Values");
+    } else {
+      employeeArray.push(employees);
+      totalSalaryCalculation();
+      appendDOM(employeeArray[counter]);
+    }
+}
 
 //Input: Takes in object created by user
 //Output: Writes items to the DOM
