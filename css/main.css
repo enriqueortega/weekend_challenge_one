@@ -72,3 +72,7 @@ button {
   width: 15%;
   background-color: #FF4444;
 }
+
+.example {
+  opacity: 0.3;
+}
