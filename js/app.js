@@ -6,7 +6,7 @@ var employeeArray =[];
 
 //Executables
 $(document).ready(function(){
-  $('#employeeInformation').on("submit", handleSubmit);
+  $('#employeeInformation').on('submit', handleSubmit);
   $('.employee-nodes').on('click', '.employee-removal', removify);
 });
 
@@ -20,6 +20,7 @@ function handleSubmit(event){
     });
 
     $('#employeeInformation').find('input[type=text]').val('');
+    $('#employeeInformation').find('input[type=number]').val('');
 
     //Checks to see if fields are empty
     //If not, run core script
